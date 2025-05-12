@@ -1,0 +1,36 @@
+#include <stdio.h>
+
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+// Recursive function to solve knapsack
+int knapsack(int W, int weight[], int value[], int n) {
+    // Base Case
+    if (n == 0 || W == 0)
+        return 0;
+
+    // If weight of the nth item is more than the current capacity, skip it
+    if (weight[n-1] > W)
+        return knapsack(W, weight, value, n-1);
+    else {
+        // Return the maximum of two cases:
+        // (1) nth item included
+        // (2) not included
+        int include = value[n-1] + knapsack(W - weight[n-1], weight, value, n-1);
+        int exclude = knapsack(W, weight, value, n-1);
+        return max(include, exclude);
+    }
+}
+
+int main() {
+    int value[] = {60, 100, 120};
+    int weight[] = {10, 20, 30};
+    int W = 30;
+    int n = sizeof(value) / sizeof(value[0]);
+
+    int result = knapsack(W, weight, value, n);
+    printf("Maximum value that can be obtained = %d\n", result);
+
+    return 0;
+}

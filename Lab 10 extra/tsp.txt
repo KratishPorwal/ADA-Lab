@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <limits.h>
+
+#define MAX 20  // Max number of cities allowed
+
+int V;                    // Actual number of cities
+int graph[MAX][MAX];      // Distance matrix
+int visited[MAX];         // Visited cities
+int ans = INT_MAX;        // Minimum tour cost
+
+void tsp(int currPos, int count, int cost, int start) {
+    if (count == V && graph[currPos][start]) {
+        if (cost + graph[currPos][start] < ans)
+            ans = cost + graph[currPos][start];
+        return;
+    }
+
+    for (int i = 0; i < V; i++) {
+        if (!visited[i] && graph[currPos][i]) {
+            visited[i] = 1;
+            tsp(i, count + 1, cost + graph[currPos][i], start);
+            visited[i] = 0; // backtrack
+        }
+    }
+}
+
+int main() {
+    printf("Enter number of cities: ");
+    scanf("%d", &V);
+
+    if (V > MAX || V < 2) {
+        printf("Number of cities must be between 2 and %d.\n", MAX);
+        return 1;
+    }
+
+    printf("Enter the distance matrix (%d x %d):\n", V, V);
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            scanf("%d", &graph[i][j]);
+        }
+    }
+
+    for (int i = 0; i < V; i++)
+        visited[i] = 0;
+
+    visited[0] = 1;  // Starting from city 0
+    tsp(0, 1, 0, 0);
+
+    printf("Minimum cost to visit all cities = %d\n", ans);
+
+    return 0;
+}
